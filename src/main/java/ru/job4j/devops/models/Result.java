@@ -4,6 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * Модель данных для представления результата вычислений.
+ * <p>
+ * Используется для сериализации результатов арифметических операций в JSON.
+ * Содержит одно поле - числовое значение результата.
+ * </p>
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
