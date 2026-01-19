@@ -1,7 +1,9 @@
-FROM gradle:8.11.1-jdk17 as builder
+FROM gradle:8.11.1-jdk17 AS builder
 RUN mkdir job4j_devops
 WORKDIR /job4j_devops
 
+COPY gradle gradle/
+COPY gradle/libs.versions.toml gradle/
 COPY build.gradle.kts settings.gradle.kts gradle.properties ./
 RUN gradle --no-daemon dependencies
 
@@ -25,7 +27,7 @@ RUN jlink \
     --output /slim-jre
 
 FROM debian:bookworm-slim
-ENV JAVA_HOME /user/java/jdk17
+ENV JAVA_HOME=/user/java/jdk17
 ENV PATH $JAVA_HOME/bin:$PATH
 
 COPY --from=builder /slim-jre $JAVA_HOME
