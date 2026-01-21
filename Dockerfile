@@ -10,13 +10,6 @@ RUN jdeps --ignore-missing-deps -q \
     --class-path 'BOOT-INF/lib/*' \
     /build/libs/DevOps-1.0.0.jar > deps.info
 
-RUN jdeps --ignore-missing-deps -q \
-    --recursive \
-    --multi-release 17 \
-    --print-module-deps \
-    --class-path 'BOOT-INF/lib/*' \
-    /job4j_devops/build/libs/DevOps-1.0.0.jar > deps.info
-
 RUN jlink \
     --add-modules $(cat deps.info) \
     --strip-debug \
