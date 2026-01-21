@@ -22,5 +22,5 @@ FROM debian:bookworm-slim
 ENV JAVA_HOME=/user/java/jdk17
 ENV PATH $JAVA_HOME/bin:$PATH
 COPY --from=builder /slim-jre $JAVA_HOME
-COPY --from=builder /job4j_devops/build/libs/DevOps-1.0.0.jar .
+COPY --from=builder /build/libs/DevOps-1.0.0.jar .
 ENTRYPOINT ["java", "-jar", "DevOps-1.0.0.jar"]
