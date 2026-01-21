@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'agent1' }
+    agent { label 'agent-jdk17' }
 
     tools {
         git 'Default'
@@ -8,49 +8,32 @@ pipeline {
     stages {
         stage('Prepare Environment') {
             steps {
-                script {
-                    sh 'chmod +x ./gradlew'
-                }
+                sh 'chmod +x ./gradlew'
             }
         }
-        stage('Build') {
-            parallel {
-                stage('Checkstyle Main') {
-                    steps {
-                        script {
-                            sh './gradlew checkstyleMain'
-                        }
-                    }
-                }
-                stage('Checkstyle Test') {
-                    steps {
-                        script {
-                            sh './gradlew checkstyleTest'
-                        }
-                    }
-                }
-
-                stage('Compile') {
-                    steps {
-                        script {
-                            sh './gradlew compileJava'
-                        }
-                    }
-                }
-
-                stage('Test') {
-                    steps {
-                        script {
-                            sh './gradlew test'
-                        }
-                        script {
-                            sh './gradlew jacocoTestReport'
-                        }
-                        script {
-                            sh './gradlew jacocoTestCoverageVerification'
-                        }
-                    }
-                }
+        stage('Check') {
+            steps {
+                sh './gradlew check'
+            }
+        }
+        stage('Package') {
+            steps {
+                sh './gradlew build'
+            }
+        }
+        stage('JaCoCo Report') {
+            steps {
+                sh './gradlew jacocoTestReport'
+            }
+        }
+        stage('JaCoCo Verification') {
+            steps {
+                sh './gradlew jacocoTestCoverageVerification'
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t job4j_devops .'
             }
         }
     }
