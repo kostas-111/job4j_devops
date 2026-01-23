@@ -2,11 +2,13 @@ package ru.job4j.devops.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.test.context.ActiveProfiles;
 import ru.job4j.devops.models.Result;
 import ru.job4j.devops.models.TwoArgs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class CalcControllerTest {
 
     @Test
