@@ -33,7 +33,15 @@ val integrationTestRuntimeOnly by configurations.getting {
 }
 
 tasks.jacocoTestCoverageVerification {
-    dependsOn("test", "integrationTest")
+    dependsOn("test", "integrationTest") // Зависимость от всех тестов
+
+    // Указываем файлы с данными о покрытии
+    executionData(
+        files(
+            layout.buildDirectory.file("jacoco/test.exec").get().asFile,
+            layout.buildDirectory.file("jacoco/integrationTest.exec").get().asFile
+        ).filter { it.exists() }
+    )
 
     violationRules {
         rule {
@@ -41,13 +49,6 @@ tasks.jacocoTestCoverageVerification {
                 minimum = "0.6".toBigDecimal()
             }
         }
-
-        executionData(
-            files(
-                "$buildDir/jacoco/test.exec",
-                "$buildDir/jacoco/integrationTest.exec"
-            ).filter { it.exists() }
-        )
 
         rule {
             isEnabled = false
@@ -60,6 +61,23 @@ tasks.jacocoTestCoverageVerification {
                 maximum = "0.3".toBigDecimal()
             }
         }
+    }
+}
+
+// 3. Также обновляем jacocoTestReport
+tasks.jacocoTestReport {
+    dependsOn("test", "integrationTest")
+
+    executionData(
+        files(
+            layout.buildDirectory.file("jacoco/test.exec").get().asFile,
+            layout.buildDirectory.file("jacoco/integrationTest.exec").get().asFile
+        ).filter { it.exists() }
+    )
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
     }
 }
 
@@ -137,8 +155,10 @@ tasks.register<Test>("integrationTest") {
     // Usually run after regular unit tests
     shouldRunAfter(tasks.test)
 
+    // Включаем JaCoCo для интеграционных тестов
     configure<JacocoTaskExtension> {
-        destinationFile = file("$buildDir/jacoco/integrationTest.exec")
+        destinationFile = layout.buildDirectory.file("jacoco/integrationTest.exec").get().asFile
+        includes = emptyList()
     }
 }
 
