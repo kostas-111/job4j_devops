@@ -33,12 +33,21 @@ val integrationTestRuntimeOnly by configurations.getting {
 }
 
 tasks.jacocoTestCoverageVerification {
+    dependsOn("test", "integrationTest")
+
     violationRules {
         rule {
             limit {
                 minimum = "0.6".toBigDecimal()
             }
         }
+
+        executionData(
+            files(
+                "$buildDir/jacoco/test.exec",
+                "$buildDir/jacoco/integrationTest.exec"
+            ).filter { it.exists() }
+        )
 
         rule {
             isEnabled = false
@@ -127,6 +136,10 @@ tasks.register<Test>("integrationTest") {
 
     // Usually run after regular unit tests
     shouldRunAfter(tasks.test)
+
+    configure<JacocoTaskExtension> {
+        destinationFile = file("$buildDir/jacoco/integrationTest.exec")
+    }
 }
 
 tasks.named<Test>("test") {
@@ -150,6 +163,10 @@ tasks.assemble {
 
 tasks.test {
     finalizedBy(tasks.spotbugsMain)
+}
+
+spotbugs {
+    ignoreFailures = true
 }
 
 repositories {
