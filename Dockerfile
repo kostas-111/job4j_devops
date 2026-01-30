@@ -1,4 +1,4 @@
-FROM openjdk:17-ea-jdk AS builder
+FROM gradle:8.11.1-jdk17 AS builder
 RUN mkdir job4j_devops
 WORKDIR /job4j_devops
 COPY build.gradle.kts settings.gradle.kts gradle.properties ./
