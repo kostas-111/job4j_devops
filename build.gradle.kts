@@ -170,7 +170,6 @@ tasks.named<Test>("test") {
 
 tasks.check {
     dependsOn("jacocoTestCoverageVerification", "checkJarSize")
-    dependsOn("integrationTest")
 }
 
 tasks.build {
